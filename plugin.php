@@ -26,119 +26,78 @@ License:
   
 */
 
-// TODO: rename this class to a proper name for yuour plugin
 class PluginName {
 	
 	/*--------------------------------------------*
 	 * Constants
 	 *--------------------------------------------*/
-	
-	/**
-	 * TODO: update these values to reflect the name  and slug of your plugin.
-	 */
-
 	const name = 'Plugin Name';
-	
 	const slug = 'plugin-name-slug';
 	 
-	/*--------------------------------------------*
-	 * Constructor
-	 *--------------------------------------------*/
-	
 	/**
-	 * Initializes the plugin by setting localization, filters, and administration functions.
+	 * Constructor
 	 */
 	function __construct() {
-	
-	    // Define constants used throughout the plugin
-	    $this->init_plugin_constants();
+    		//register an activation hook for the plugin
+    		register_activation_hook( __FILE__, array( &$this, 'install_plugin' ) );
+    
+    		//Create an init action
+    		add_action( 'init', array( &$this, 'init_plugin' ) );
+	}
   
-		load_plugin_textdomain( PLUGIN_LOCALE, false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+	/**
+	 * Runs when the plugin is activated
+	 */  
+	function install_plugin() {
+		// do not generate any output here
+	}
+  
+	/**
+	 * Runs when the plugin is initialized
+	 */
+	function init_plugin() {
+		// Setup localization
+		load_plugin_textdomain( self::slug, false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 		
-    	// Load JavaScript and stylesheets
-    	$this->register_scripts_and_styles();
+		// Load JavaScript and stylesheets
+		$this->register_scripts_and_styles();
 		
-	    /*
-	     * TODO:
-	     * Define the custom functionality for your plugin. The first parameter of the
-	     * add_action/add_filter calls are the hooks into which your code should fire.
-	     *
-	     * The second parameter is the function name located within this class. See the stubs
-	     * later in the file.
-	     *
-	     * For more information: 
-	     * http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
-	     */
-	    add_action( 'TODO', array( $this, 'action_method_name' ) );
-	    add_filter( 'TODO', array( $this, 'filter_method_name' ) );
+		// Register a shortcode
+		add_shortcode('shortcode', 'render_shortcode');
+		
+		if ( is_admin() ) {
+			//this will run when in the WordPress admin
+		} else {
+			//this will run when on the frontend
+		}
+		
+		/*
+		* TODO: Define custom functionality for your plugin here
+		*
+		* For more information: 
+		* http://codex.wordpress.org/Plugin_API#Hooks.2C_Actions_and_Filters
+		*/
+		add_action( 'TODO', array( $this, 'action_callback_method_name' ) );
+		add_filter( 'TODO', array( $this, 'filter_callback_method_name' ) );    
+	}
 
-	} // end constructor
+	function action_callback_method_name() {
+    		// TODO define your action method here
+	}
 	
-	/*--------------------------------------------*
-	 * Core Functions
-	 *---------------------------------------------*/
-	
-	/**
- 	 * Note:  Actions are points in the execution of a page or process
-	 *        lifecycle that WordPress fires.
-	 *
-	 *		  WordPress Actions: http://codex.wordpress.org/Plugin_API#Actions
-	 *		  Action Reference:  http://codex.wordpress.org/Plugin_API/Action_Reference
-	 *
-	 */
-	function action_method_name() {
-    	// TODO define your action method here
-	} // end action_method_name
-	
-	/**
-	 * Note:  Filters are points of execution in which WordPress modifies data
-	 *        before saving it or sending it to the browser.
-	 *
-	 *		  WordPress Filters: http://codex.wordpress.org/Plugin_API#Filters
-	 *		  Filter Reference:  http://codex.wordpress.org/Plugin_API/Filter_Reference
-	 *
-	 */
-	function filter_method_name() {
-	    // TODO define your filter method here
-	} // end filter_method_name
+	function filter_callback_method_name() {
+    		// TODO define your filter method here
+	}
   
-	/*--------------------------------------------*
-	 * Private Functions
-	 *---------------------------------------------*/
-   
-	/**
-	 * Initializes constants used for convenience throughout 
-	 * the plugin.
-	 */
-	private function init_plugin_constants() {
-		
-		/* TODO
-		 * 
-		 * Define this as the name of your plugin. This is what shows
-		 * in the Widgets area of WordPress.
-		 * 
-		 * For example: WordPress Widget Boilerplate.
-		 */
-		if ( !defined( 'PLUGIN_NAME' ) ) {
-		  define( 'PLUGIN_NAME', self::name );
-		} // end if
-		
-		/* TODO
-		 * 
-		 * this is the slug of your plugin used in initializing it with
-		 * the WordPress API.
-		 
-		 * This should also be the
-		 * directory in which your plugin resides. Use hyphens.
-		 * 
-		 * For example: wordpress-widget-boilerplate
-		 */
-		if ( !defined( 'PLUGIN_SLUG' ) ) {
-		  define( 'PLUGIN_SLUG', self::slug );
-		} // end if
-	
-	} // end init_plugin_constants
-	
+	function render_shortcode($atts) {
+		// Extract the attributes
+		extract(shortcode_atts(array(
+			'attr1' => 'foo', //foo is a default value
+			'attr2' => 'bar'
+			), $atts));
+		// you can now access the attribute values using $attr1 and $attr2
+	}
+  
 	/**
 	 * Registers and enqueues stylesheets for the administration panel and the
 	 * public facing site.
@@ -167,7 +126,7 @@ class PluginName {
 
 		if( file_exists( $file ) ) {
 			if( $is_script ) {
-				wp_register_script( $name, $url, array('jquery') );
+				wp_register_script( $name, $url, array('jquery') ); //depends on jquery
 				wp_enqueue_script( $name );
 			} else {
 				wp_register_style( $name, $url );
@@ -178,6 +137,6 @@ class PluginName {
 	} // end load_file
   
 } // end class
-// TODO: update the instantiation call of your plugin to the name given at the class definition
 new PluginName();
+
 ?>
