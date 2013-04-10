@@ -148,5 +148,5 @@ class PluginName {
 } // end class
 
 if ( PluginName::start_me() ) {
-	add_action( 'init', array( PluginName::get_instance(), 'init' );
+	add_action( 'init', array( PluginName::get_instance(), 'init' ) );
 }
