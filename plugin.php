@@ -33,6 +33,15 @@ class PluginName {
 	 *--------------------------------------------*/
 	const name = 'Plugin Name';
 	const slug = 'plugin-name-slug';
+	
+	public static $main_instance;
+	
+	public static function get_instance() {
+		if ( !isset( self::$main_instance ) ) {
+			self::$main_instance = new PluginName();
+		}
+		return self::$main_instance;
+	}
 	 
 	/**
 	 * Constructor
@@ -63,7 +72,7 @@ class PluginName {
 		$this->register_scripts_and_styles();
 		
 		// Register a shortcode
-		add_shortcode('shortcode', 'render_shortcode');
+		add_shortcode( 'shortcode', 'render_shortcode' );
 		
 		if ( is_admin() ) {
 			//this will run when in the WordPress admin
@@ -89,7 +98,7 @@ class PluginName {
     		// TODO define your filter method here
 	}
   
-	function render_shortcode($atts) {
+	function render_shortcode( $atts ) {
 		// Extract the attributes
 		extract(shortcode_atts(array(
 			'attr1' => 'foo', //foo is a default value
@@ -121,12 +130,12 @@ class PluginName {
 	 */
 	private function load_file( $name, $file_path, $is_script = false ) {
 		
-		$url = plugins_url($file_path, __FILE__);
-		$file = plugin_dir_path(__FILE__) . $file_path;
+		$url = plugins_url( $file_path, __FILE__ );
+		$file = plugin_dir_path( __FILE__ ) . $file_path;
 
-		if( file_exists( $file ) ) {
-			if( $is_script ) {
-				wp_register_script( $name, $url, array('jquery') ); //depends on jquery
+		if ( file_exists( $file ) ) {
+			if ( $is_script ) {
+				wp_register_script( $name, $url, array( 'jquery' ) ); //depends on jquery
 				wp_enqueue_script( $name );
 			} else {
 				wp_register_style( $name, $url );
@@ -137,6 +146,5 @@ class PluginName {
 	} // end load_file
   
 } // end class
-new PluginName();
 
-?>
+add_action( 'wp_loaded', PluginName::get_instance() );
